@@ -17,7 +17,7 @@ export const getToken = async () => {
   return response;
 };
 
-export const register = async token => {
+export const register = async (token, body) => {
   payload.headers["x-CSRF-Token"] = token;
   payload.method = "POST";
   payload.body = JSON.stringify(body);

@@ -7,15 +7,39 @@
  */
 
 import React, { Component } from "react";
-import { View, StyleSheet } from "react-native";
+import { AsyncStorage } from "react-native";
 import AppProvider from "./app/provider";
 import Router from "./app/config/routes";
 
-const App = () => {
-  return (
-    <AppProvider>
-      <Router />
-    </AppProvider>
-  );
-};
+class App extends Component {
+  state = { initialRouteName: null };
+  initialRouter = async () => {
+    try {
+      // await AsyncStorage.removeItem("user");
+      let user = await AsyncStorage.getItem("user");
+      user = JSON.parse(user);
+      if (user.uid) {
+        return "Home";
+      } else {
+        return "Login";
+      }
+    } catch (error) {
+      return "Login";
+    }
+  };
+  componentDidMount = async () => {
+    const initialRouteName = await this.initialRouter();
+    this.setState({ initialRouteName });
+  };
+  render() {
+    const { initialRouteName } = this.state;
+
+    return (
+      <AppProvider>
+        <Router initialRouteName={initialRouteName} />
+      </AppProvider>
+    );
+  }
+}
+
 export default App;

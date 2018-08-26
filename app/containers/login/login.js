@@ -5,16 +5,16 @@ import style from "../../styles";
 import TextInput from "../../components/TextInput";
 
 // navigation.navigate("Register")
-const Login = ({ navigation, getToken, register, login }) => {
+const Login = ({ navigation, login }) => {
   return (
     <View style={style.containerLogin}>
-      <TextInput placeholder="Email" />
-      <TextInput placeholder="Password" />
+      <TextInput placeholder="Correo Electrónico" />
+      <TextInput placeholder="Contraseña" />
       <TouchableHighlight
         underlayColor="transparent"
         style={style.btn}
         onPress={e => {
-            login();
+          login(navigation);
         }}
       >
         <Fragment>
@@ -24,7 +24,7 @@ const Login = ({ navigation, getToken, register, login }) => {
       <TouchableHighlight
         underlayColor="transparent"
         style={{ marginTop: 100 }}
-        onPress={e => getToken()}
+        onPress={e => navigation.navigate("Register")}
       >
         <Fragment>
           <Text style={style.text}>

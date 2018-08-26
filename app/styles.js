@@ -11,7 +11,7 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     backgroundColor: "#191f27",
-    padding: 20,
+    paddingBottom: 40,
     paddingHorizontal: 50
   },
   //input

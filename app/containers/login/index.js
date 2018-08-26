@@ -2,10 +2,15 @@ import React, { Component } from "react";
 import { AppConsumer } from "../../provider";
 import Login from "./login";
 
-class PatientNew extends Component {
+class LoginConsumer extends Component {
   render() {
-    return <AppConsumer>{props => <Login {...props} />}</AppConsumer>;
+    const { navigation } = this.props;
+    return (
+      <AppConsumer>
+        {props => <Login {...props} navigation={navigation} />}
+      </AppConsumer>
+    );
   }
 }
 
-export default PatientNew;
+export default LoginConsumer;
