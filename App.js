@@ -21,10 +21,10 @@ class App extends Component {
       if (user.uid) {
         return "Home";
       } else {
-        return "Login";
+        return "Home";
       }
     } catch (error) {
-      return "Login";
+      return "Home";
     }
   };
   componentDidMount = async () => {
