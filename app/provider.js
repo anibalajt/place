@@ -5,11 +5,26 @@ import { getToken, login, register } from "./api";
 const { Consumer, Provider } = createContext({});
 
 class AppProvider extends Component {
-  state = { token: "RRfkB_Pgj0T5Xtii57co2_BgojNZSbfDpEWNmP3Tifg" };
+  state = { token: null };
 
+  componentDidMount = async () => {
+    // await AsyncStorage.removeItem("token")
+    this.token();
+  };
   token = async () => {
-    const token = await getToken();
-    this.setState({ token });
+    try {
+      let token = await AsyncStorage.getItem("token");
+      if (!token) {
+        await getToken();
+        this.token();
+      }
+      this.setState({ token });
+    } catch (error) {
+      console.log("error :", error);
+    }
+
+    // const token = await getToken();
+    // return token;
   };
   register = async navigation => {
     const { token } = this.state;

@@ -1,3 +1,4 @@
+import { AsyncStorage } from "react-native";
 const endpointRegister = "http://cat.sainetapps5.com/user";
 const endpointLogin = "http://cat.sainetapps5.com/app_login";
 const endpointToken = "http://cat.sainetapps5.com/restws/session/token";
@@ -14,7 +15,13 @@ export const getToken = async () => {
   const response = await fetch(endpointToken, payload).then(response =>
     response.text()
   );
-  return response;
+  try {
+    const token = { token: response };
+    await AsyncStorage.setItem("token", JSON.stringify(token));
+  } catch (error) {
+    console.log("error :", error);
+    return false;
+  }
 };
 
 export const register = async (token, body) => {
