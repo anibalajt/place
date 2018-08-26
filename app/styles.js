@@ -14,7 +14,6 @@ export default StyleSheet.create({
     padding: 20,
     paddingHorizontal: 50
   },
-
   //input
   textInput: {
     height: 40,

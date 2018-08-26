@@ -10,12 +10,15 @@ import TextInput from "../../components/TextInput";
 const Register = ({ navigation }) => {
   return (
     <View style={style.containerLogin}>
-      <TextInput placeholder="nombre y apellido" />
-      <TextInput placeholder="Correo Electrónico" />
+      <TextInput placeholder="Nombres y apellidos" />
+      <TextInput
+        placeholder="Correo Electrónico"
+        keyboardType="email-address"
+      />
       <TextInput placeholder="Contraseña" />
       <TouchableHighlight style={style.btn}>
         <Fragment>
-          <Text style={style.textBtn}>iniciar sesión</Text>
+          <Text style={style.textBtn}>Crear cuenta</Text>
         </Fragment>
       </TouchableHighlight>
       <TouchableHighlight
