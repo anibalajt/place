@@ -5,7 +5,7 @@ import MapView from "react-native-maps";
 const Home = () => {
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} region={{}} />
+      <MapView style={styles.map}/>
     </View>
   );
 };
