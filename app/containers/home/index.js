@@ -4,7 +4,12 @@ import Home from "./home";
 
 class HomeConsumer extends Component {
   render() {
-    return <AppConsumer>{props => <Home {...props} />}</AppConsumer>;
+    const { navigation } = this.props;
+    return (
+      <AppConsumer>
+        {props => <Home {...props} navigation={navigation} />}
+      </AppConsumer>
+    );
   }
 }
 

@@ -1,13 +1,15 @@
 import React from "react";
 import { View, TextInput } from "react-native";
 import style from "../../styles";
-const Input = props => {
+const Input = ({ updateField, name, ...props }) => {
   return (
     <TextInput
-      {...props}
       placeholderTextColor="#ffffff79"
+      {...props}
       style={[style.textInput]}
-      onChangeText={text => {}}
+      onChangeText={text => {
+        updateField(name, text);
+      }}
     />
   );
 };

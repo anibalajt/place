@@ -2,6 +2,8 @@ import { AsyncStorage } from "react-native";
 const endpointRegister = "http://cat.sainetapps5.com/user";
 const endpointLogin = "http://cat.sainetapps5.com/app_login";
 const endpointToken = "http://cat.sainetapps5.com/restws/session/token";
+const endpointPlace = "http://cat.sainetapps5.com/node";
+const endpointGetPlace = "http://cat.sainetapps5.com/node?type=place&author=";
 let payload = {
   headers: {
     "content-type": "application/json",
@@ -42,5 +44,28 @@ export const login = async (token, body) => {
   const response = await fetch(endpointLogin, payload).then(response =>
     response.json()
   );
+
+  return response;
+};
+
+export const savePlace = async (token, body) => {
+  payload.headers["x-CSRF-Token"] = token;
+  payload.method = "POST";
+  payload.body = JSON.stringify(body);
+
+  const response = await fetch(endpointPlace, payload).then(response =>
+    response.json()
+  );
+
+  return response;
+};
+export const getPlace = async (token, uid) => {
+  payload.headers["x-CSRF-Token"] = token;
+  payload.method = "get";
+
+  const response = await fetch(`${endpointGetPlace}${uid}`, payload).then(
+    response => response.json()
+  );
+
   return response;
 };

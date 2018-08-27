@@ -7,6 +7,10 @@ export default StyleSheet.create({
     backgroundColor: "#191f27",
     padding: 20
   },
+  containerMap: {
+    flex: 1,
+    justifyContent: "flex-end"
+  },
   containerLogin: {
     flex: 1,
     justifyContent: "flex-end",
@@ -40,5 +44,63 @@ export default StyleSheet.create({
     textAlign: "center",
     color: "#ffffff59",
     fontSize: 14
+  },
+
+  contentModal: {
+    ...StyleSheet.absoluteFillObject,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.7)",
+    elevation: 1,
+    zIndex: 1
+  },
+  modal: {
+    width: width - 40,
+    minHeight: height / 2,
+    backgroundColor: "rgba(255,255,255,0.7)",
+    padding: 18,
+    borderRadius: 10
+  },
+  row: {
+    flexDirection: "row"
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    elevation: 0,
+    zIndex: 0
+  },
+  bubble: {
+    minWidth: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.7)",
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 50,
+    marginTop: 15
+  },
+
+  buttonContainer: {
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    // flexDirection: "row",
+    marginBottom: 20,
+    marginRight: 20
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20,
+    backgroundColor: "rgba(255,255,255,0.9)",
+    width: width - 80,
+    height: 120
+  },
+  image: {
+    marginRight: 15,
+    width: 110,
+    height: 120,
+    resizeMode: "cover"
   }
 });

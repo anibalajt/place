@@ -1,15 +1,23 @@
 import React, { Fragment } from "react";
 import { View, Text, TouchableHighlight } from "react-native";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import style from "../../styles";
 import TextInput from "../../components/TextInput";
 
 // navigation.navigate("Register")
-const Login = ({ navigation, login }) => {
+const Login = ({ navigation, login, updateField }) => {
   return (
     <View style={style.containerLogin}>
-      <TextInput placeholder="Correo Electrónico" />
-      <TextInput placeholder="Contraseña" />
+      <TextInput
+        name="email"
+        placeholder="Correo Electrónico"
+        updateField={updateField}
+      />
+      <TextInput
+        name="password"
+        placeholder="Contraseña"
+        updateField={updateField}
+      />
       <TouchableHighlight
         underlayColor="transparent"
         style={style.btn}
@@ -36,7 +44,5 @@ const Login = ({ navigation, login }) => {
     </View>
   );
 };
-
-Login.PropTypes = {};
 
 export default Login;
