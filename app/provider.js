@@ -1,100 +1,120 @@
 import React, { Component, createContext } from "react";
 import { AsyncStorage } from "react-native";
+
 import { isValidEmail } from "./utils";
 import { getToken, login, register, savePlace, getPlace } from "./api";
 const { Consumer, Provider } = createContext({});
 
 class AppProvider extends Component {
-  state = { token: null, user: null, places: null, markers: [] };
+  state = {
+    user: null,
+    places: null,
+    markers: [],
+    errorLogin: false
+  };
 
   componentDidMount = async () => {
-    // await AsyncStorage.removeItem("token")
+    console.log("componentDidMount AppProvider");
     try {
       let user = await AsyncStorage.getItem("user");
       if (user) {
         user = JSON.parse(user);
         this.setState({ user });
-        this.getPlace();
       }
     } catch (error) {}
-    this.token();
   };
   updateField = (name, value) => {
-    this.setState({ [name]: value });
+    this.setState({ [name]: value.toLowerCase() });
   };
   logout = async navigation => {
     try {
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
-      navigation.navigate("Login");
+      await getToken();
+      // this.setState(
+      //   {
+      //     user: null,
+      //     places: null,
+      //     markers: [],
+      //     errorLogin: false
+      //   },
+      //   () =>
+      // );
+      navigation.replace("Login");
     } catch (error) {}
   };
-  token = async () => {
-    try {
-      let token = await AsyncStorage.getItem("token");
-      if (!token) {
-        await getToken();
-        this.token();
-      }
-      this.setState({ token });
-    } catch (error) {
-      console.log("error :", error);
-    }
-  };
+
   getPlace = async () => {
-    const { user, token } = this.state;
-    const response = await getPlace(token, user.uid);
-    this.setState({ places: response, markers: response.list });
+    const { user } = this.state;
+    const response = await getPlace(user.uid);
+    this.setState({ markers: response.list });
   };
   savePlace = async place => {
-    let { user, token } = this.state;
+    let { user } = this.state;
     let markers = Object.assign([], this.state.markers);
 
+    place.uid = user.uid;
+    const response = await savePlace(place);
+
+    place.nid = response.id;
     markers = [...markers, place];
     this.setState({ markers });
-    place.uid = user.uid;
-    const response = await savePlace(token, place);
-    console.log("savePlace :", response);
   };
   register = async navigation => {
-    const { token, names, mail, pass } = this.state;
+    const { names, mail, cmail, cpass, pass } = this.state;
     const body = {
       names,
       mail,
       pass
     };
-    const response = await register(token, body);
+    if (!isValidEmail(mail) || !isValidEmail(cmail) || mail !== cmail) {
+      this.setState({ erroRegister: "Email no coinciden" });
+      return false;
+    }
+    if (cpass !== pass || cpass === "" || pass === "") {
+      this.setState({ erroRegister: "Contraseñas no coinciden" });
+      return false;
+    }
+    if (pass.length < 8) {
+      this.setState({
+        erroRegister: "Contraseñas debe tener minimo 8 caracteres"
+      });
+      return false;
+    }
+    const response = await register(body);
     if (response.id.registered === true && response.id.uid !== 0) {
       delete body.pass;
-      this.setState({ user: { ...response.id, ...body } });
-      this.goTo({ ...response.id, ...body }, navigation);
+      this.setState({ user: { ...response.id, ...body } }, () => {
+        this.goTo({ ...response.id, ...body }, navigation);
+      });
     } else {
       response.id.message;
     }
   };
   login = async navigation => {
-    const { token, email, password } = this.state;
-    // email: "test2@test.com",
-    //   password: "12345678"
-    isValidEmail(email) && email !== "" && console.log("");
-    password && password !== "" && console.log("");
+    const { email, password } = this.state;
 
+    // if (!isValidEmail(email)) {
+    //   this.setState({ errorLogin: "Email incorrecto" });
+    //   return false;
+    // }
     const body = {
-      email,
-      password
+      email: "test2@test.com",
+      password: "12345678"
     };
-    const response = await login(token, body);
+    const response = await login(body);
     if (response.uid !== 0) {
-      this.setState({ user: response });
-      this.goTo(response, navigation);
+      this.setState({ user: response }, () => {
+        this.goTo(response, navigation);
+      });
     } else {
-      response.message;
+      this.setState({ errorLogin: response.message });
     }
   };
   goTo = async (response, navigation) => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(response));
-      navigation.navigate("Home");
+      navigation.replace("Home");
     } catch (error) {}
   };
   render() {
@@ -103,7 +123,6 @@ class AppProvider extends Component {
         value={{
           ...this.state,
           updateField: this.updateField,
-          getToken: this.token,
           register: this.register,
           login: this.login,
           logout: this.logout,

@@ -1,9 +1,17 @@
 import React, { Component, Fragment } from "react";
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  AsyncStorage
+} from "react-native";
+import MapView, { AnimatedRegion, Marker } from "react-native-maps";
 import style from "../../styles";
 import Modal from "../../components/modalMarker";
 import Card from "../../components/card";
+import { getPlace } from "../../api";
 
 function randomColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -17,9 +25,8 @@ class Home extends Component {
     openNav: false,
     coordinate: false
   };
-  componentDidMount = () => {
-    // const { places } = this.props;
-    // this.setState({ markers: places.list });
+  componentDidMount = async () => {
+    this.props.getPlace();
   };
   showModal = e => {
     const { showModal } = this.state;
@@ -63,21 +70,26 @@ class Home extends Component {
     this.setState({ openNav: !openNav });
   };
   render() {
-    const { logout, navigation, getPlace, places, markers } = this.props;
-    const { showModal, openNav, coordinate } = this.state;
+    const { logout, navigation, getPlace, markers } = this.props;
+    const { showModal, openNav, showPlaces } = this.state;
+
     return (
       <View style={style.containerMap}>
         <MapView style={style.map} onPress={e => this.showModal(e)}>
-          {markers.map((marker, key) => (
-            <Marker
-              key={key}
-              coordinate={{
-                latitude: Number(marker.lat),
-                longitude: Number(marker.lon)
-              }}
-              pinColor={marker.color}
-            />
-          ))}
+          {markers &&
+            markers.length > 0 &&
+            markers.map((marker, key) => {
+              return (
+                <Marker
+                  key={key}
+                  coordinate={{
+                    latitude: Number(marker.lat),
+                    longitude: Number(marker.lon)
+                  }}
+                  // pinColor={randomColor()}
+                />
+              );
+            })}
         </MapView>
         {showModal && (
           <Modal
@@ -91,6 +103,7 @@ class Home extends Component {
             <Fragment>
               <TouchableOpacity
                 onPress={() => {
+                  this.setState({ showPlaces: !showPlaces });
                   this.openNav(openNav);
                   getPlace();
                 }}
@@ -131,15 +144,17 @@ class Home extends Component {
             )}
           </TouchableOpacity>
         </View>
-        {places && (
-          <View style={{ height: 130, paddingHorizontal: 10 }}>
-            <ScrollView horizontal={true}>
-              {places.list.map((place, key) => (
-                <Card key={key} place={place} />
-              ))}
-            </ScrollView>
-          </View>
-        )}
+        {showPlaces &&
+          markers &&
+          markers.length > 0 && (
+            <View style={{ height: 130, paddingHorizontal: 10 }}>
+              <ScrollView horizontal={true}>
+                {markers.map((place, key) => (
+                  <Card key={key} place={place} />
+                ))}
+              </ScrollView>
+            </View>
+          )}
       </View>
     );
   }

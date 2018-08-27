@@ -102,5 +102,10 @@ export default StyleSheet.create({
     width: 110,
     height: 120,
     resizeMode: "cover"
+  },
+  error: {
+    color: "red",
+    textAlign: "center",
+    paddingVertical: 10
   }
 });

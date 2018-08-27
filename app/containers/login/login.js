@@ -5,11 +5,12 @@ import style from "../../styles";
 import TextInput from "../../components/TextInput";
 
 // navigation.navigate("Register")
-const Login = ({ navigation, login, updateField }) => {
+const Login = ({ navigation, login, updateField, errorLogin }) => {
   return (
     <View style={style.containerLogin}>
       <TextInput
         name="email"
+        keyboardType="email-address"
         placeholder="Correo Electrónico"
         updateField={updateField}
       />
@@ -29,6 +30,7 @@ const Login = ({ navigation, login, updateField }) => {
           <Text style={style.textBtn}>iniciar sesión</Text>
         </Fragment>
       </TouchableHighlight>
+      <Text style={style.error}>{errorLogin}</Text>
       <TouchableHighlight
         underlayColor="transparent"
         style={{ marginTop: 100 }}

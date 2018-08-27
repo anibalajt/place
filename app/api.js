@@ -1,4 +1,5 @@
 import { AsyncStorage } from "react-native";
+import axios from "axios";
 const endpointRegister = "http://cat.sainetapps5.com/user";
 const endpointLogin = "http://cat.sainetapps5.com/app_login";
 const endpointToken = "http://cat.sainetapps5.com/restws/session/token";
@@ -12,60 +13,64 @@ let payload = {
   }
 };
 export const getToken = async () => {
-  payload.method = "GET";
-
-  const response = await fetch(endpointToken, payload).then(response =>
-    response.text()
-  );
   try {
-    const token = { token: response };
+    payload.method = "GET";
+
+    const response = await axios.get(endpointToken, payload);
+    const token = { token: response.data };
     await AsyncStorage.setItem("token", JSON.stringify(token));
+    return true;
   } catch (error) {
     console.log("error :", error);
     return false;
   }
 };
-
-export const register = async (token, body) => {
-  payload.headers["x-CSRF-Token"] = token;
-  payload.method = "POST";
-  payload.body = JSON.stringify(body);
-
-  const response = await fetch(endpointRegister, payload).then(response =>
-    response.json()
-  );
-  return response;
+const token = async () => {
+  try {
+    let token = await AsyncStorage.getItem("token");
+    if (token) {
+      token = JSON.parse(token);
+      return token.token;
+    }
+  } catch (error) {
+    console.log("error token:", error);
+  }
 };
-export const login = async (token, body) => {
-  payload.headers["x-CSRF-Token"] = token;
+export const register = async body => {
+  let t = await token();
+  payload.headers["x-CSRF-Token"] = t;
   payload.method = "POST";
-  payload.body = JSON.stringify(body);
 
-  const response = await fetch(endpointLogin, payload).then(response =>
-    response.json()
-  );
-
-  return response;
+  const response = await axios.post(endpointRegister, body, payload);
+  return response.data;
 };
 
-export const savePlace = async (token, body) => {
-  payload.headers["x-CSRF-Token"] = token;
-  payload.method = "POST";
-  payload.body = JSON.stringify(body);
+export const login = async body => {
+  let t = await token();
 
-  const response = await fetch(endpointPlace, payload).then(response =>
-    response.json()
-  );
+  payload.headers["x-CSRF-Token"] = t;
+  payload.method = "POST";
+
+  const response = await axios.post(endpointLogin, body, payload);
+
+  return response.data;
+};
+
+export const savePlace = async body => {
+  let t = await token();
+
+  payload.headers["x-CSRF-Token"] = t;
+  payload.method = "POST";
+
+  const response = await axios.post(endpointPlace, body, payload);
 
   return response;
 };
-export const getPlace = async (token, uid) => {
-  payload.headers["x-CSRF-Token"] = token;
-  payload.method = "get";
+export const getPlace = async uid => {
+  // let t = await token();
 
-  const response = await fetch(`${endpointGetPlace}${uid}`, payload).then(
-    response => response.json()
-  );
+  payload.method = "GET";
 
-  return response;
+  const response = await axios.get(`${endpointGetPlace}${uid}`, payload);
+  return response.data;
 };

@@ -15,9 +15,12 @@ const Modal = ({ showModal, onSave, updateField }) => {
         onPress={e => {}}
       >
         <Fragment>
-          <Text>Modal</Text>
+          <Text style={{ fontSize: 24, textAlign: "center", marginBottom: 15 }}>
+            Crear Lugar
+          </Text>
           <TextInput
             updateField={updateField}
+            styleCustom={{ color: "#000" }}
             name="title"
             placeholder="Nombre del lugar"
             placeholderTextColor="#00000079"
