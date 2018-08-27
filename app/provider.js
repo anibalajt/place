@@ -8,13 +8,11 @@ const { Consumer, Provider } = createContext({});
 class AppProvider extends Component {
   state = {
     user: null,
-    places: null,
     markers: [],
     errorLogin: false
   };
 
   componentDidMount = async () => {
-    console.log("componentDidMount AppProvider");
     try {
       let user = await AsyncStorage.getItem("user");
       if (user) {
@@ -31,15 +29,6 @@ class AppProvider extends Component {
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
       await getToken();
-      // this.setState(
-      //   {
-      //     user: null,
-      //     places: null,
-      //     markers: [],
-      //     errorLogin: false
-      //   },
-      //   () =>
-      // );
       navigation.replace("Login");
     } catch (error) {}
   };
@@ -94,17 +83,19 @@ class AppProvider extends Component {
   login = async navigation => {
     const { email, password } = this.state;
 
-    // if (!isValidEmail(email)) {
-    //   this.setState({ errorLogin: "Email incorrecto" });
-    //   return false;
-    // }
+    if (!isValidEmail(email)) {
+      this.setState({ errorLogin: "Email incorrecto" });
+      return false;
+    }
+    // email: "test2@test.com",
+    // password: "12345678"
     const body = {
-      email: "test2@test.com",
-      password: "12345678"
+      email,
+      password
     };
     const response = await login(body);
     if (response.uid !== 0) {
-      this.setState({ user: response }, () => {
+      this.setState({ user: response, markers: [] }, () => {
         this.goTo(response, navigation);
       });
     } else {

@@ -23,10 +23,20 @@ class Home extends Component {
     showModal: false,
     markers: [],
     openNav: false,
-    coordinate: false
+    coordinate: false,
+    region: {
+      latitude: 3.2172100025695,
+      longitude: -72.32292227447,
+      latitudeDelta: 29.790133756188375,
+      longitudeDelta: 16.93265575915575
+    }
   };
   componentDidMount = async () => {
     this.props.getPlace();
+  };
+  changeRegion = coordinate => {
+    let { region } = this.state;
+    this.setState({ region: { ...region, ...coordinate } });
   };
   showModal = e => {
     const { showModal } = this.state;
@@ -71,11 +81,15 @@ class Home extends Component {
   };
   render() {
     const { logout, navigation, getPlace, markers } = this.props;
-    const { showModal, openNav, showPlaces } = this.state;
+    const { showModal, openNav, showPlaces, region } = this.state;
 
     return (
       <View style={style.containerMap}>
-        <MapView style={style.map} onPress={e => this.showModal(e)}>
+        <MapView
+          style={style.map}
+          onPress={e => this.showModal(e)}
+          region={region}
+        >
           {markers &&
             markers.length > 0 &&
             markers.map((marker, key) => {
@@ -105,12 +119,14 @@ class Home extends Component {
                 onPress={() => {
                   this.setState({ showPlaces: !showPlaces });
                   this.openNav(openNav);
-                  getPlace();
+                  if (!showPlaces === true) {
+                    getPlace();
+                  }
                 }}
                 style={style.bubble}
               >
                 <Fragment>
-                  <Text>Mis Lugares</Text>
+                  <Text>{`${showPlaces ? "Ocultar" : "Ver"}`} Mis Lugares</Text>
                 </Fragment>
               </TouchableOpacity>
               <TouchableOpacity
@@ -150,7 +166,11 @@ class Home extends Component {
             <View style={{ height: 130, paddingHorizontal: 10 }}>
               <ScrollView horizontal={true}>
                 {markers.map((place, key) => (
-                  <Card key={key} place={place} />
+                  <Card
+                    key={key}
+                    place={place}
+                    changeRegion={this.changeRegion}
+                  />
                 ))}
               </ScrollView>
             </View>
