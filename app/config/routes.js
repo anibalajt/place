@@ -7,6 +7,7 @@ import Home from "../containers/home";
 import photos from "../components/photos";
 
 const Router = ({ initialRouteName }) => {
+  console.log('initialRouteName :', initialRouteName);
   const CustomNavigator = createStackNavigator(
     {
       Login: { screen: Login },

@@ -3,8 +3,14 @@ import { ScrollView, View, Text, TouchableHighlight } from "react-native";
 // import PropTypes from "prop-types";
 import style from "../../styles";
 import TextInput from "../../components/TextInput";
-
-const Register = ({ navigation, register, erroRegister, updateField }) => {
+import Loading from "../loading";
+const Register = ({
+  navigation,
+  register,
+  erroRegister,
+  updateField,
+  loading
+}) => {
   return (
     <View style={style.containerLogin}>
       <TextInput
@@ -49,6 +55,7 @@ const Register = ({ navigation, register, erroRegister, updateField }) => {
           <Text style={style.text}>iniciar sesión</Text>
         </Fragment>
       </TouchableHighlight>
+      {loading && <Loading />}
     </View>
   );
 };

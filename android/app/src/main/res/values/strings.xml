@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">place</string>
+    <color name="backgroundColor">#0F1317</color>
 </resources>

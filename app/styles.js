@@ -107,5 +107,12 @@ export default StyleSheet.create({
     color: "red",
     textAlign: "center",
     paddingVertical: 10
+  },
+  loading: {
+    flex: 1,
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#191f2759",
+    alignItems: "center",
+    justifyContent: "center"
   }
 });

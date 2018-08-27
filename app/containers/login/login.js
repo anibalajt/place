@@ -3,9 +3,9 @@ import { View, Text, TouchableHighlight } from "react-native";
 // import PropTypes from "prop-types";
 import style from "../../styles";
 import TextInput from "../../components/TextInput";
-
+import Loading from "../loading";
 // navigation.navigate("Register")
-const Login = ({ navigation, login, updateField, errorLogin }) => {
+const Login = ({ navigation, login, updateField, errorLogin, loading }) => {
   return (
     <View style={style.containerLogin}>
       <TextInput
@@ -43,6 +43,7 @@ const Login = ({ navigation, login, updateField, errorLogin }) => {
           </Text>
         </Fragment>
       </TouchableHighlight>
+      {loading && <Loading />}
     </View>
   );
 };

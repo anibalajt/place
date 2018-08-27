@@ -9,6 +9,7 @@
 import React, { Component } from "react";
 import { AsyncStorage } from "react-native";
 import AppProvider from "./app/provider";
+import Loading from "./app/containers/loading";
 import Router from "./app/config/routes";
 import { getToken } from "./app/api";
 class App extends Component {
@@ -36,6 +37,9 @@ class App extends Component {
   render() {
     const { initialRouteName } = this.state;
 
+    if (!initialRouteName) {
+      return <Loading />;
+    }
     return (
       <AppProvider>
         <Router initialRouteName={initialRouteName} />

@@ -9,7 +9,9 @@ class AppProvider extends Component {
   state = {
     user: null,
     markers: [],
-    errorLogin: false
+    errorLogin: false,
+    erroRegister: false,
+    loading: false
   };
 
   componentDidMount = async () => {
@@ -34,7 +36,15 @@ class AppProvider extends Component {
   };
 
   getPlace = async () => {
-    const { user } = this.state;
+    let { user } = this.state;
+    if (!user) {
+      try {
+        user = await AsyncStorage.getItem("user");
+        if (user) {
+          user = JSON.parse(user);
+        }
+      } catch (error) {}
+    }
     const response = await getPlace(user.uid);
     this.setState({ markers: response.list });
   };
@@ -50,6 +60,7 @@ class AppProvider extends Component {
     this.setState({ markers });
   };
   register = async navigation => {
+    this.setState({ loading: true });
     const { names, mail, cmail, cpass, pass } = this.state;
     const body = {
       names,
@@ -57,34 +68,44 @@ class AppProvider extends Component {
       pass
     };
     if (!isValidEmail(mail) || !isValidEmail(cmail) || mail !== cmail) {
-      this.setState({ erroRegister: "Email no coinciden" });
+      this.setState({ erroRegister: "Email no coinciden", loading: false });
       return false;
     }
     if (cpass !== pass || cpass === "" || pass === "") {
-      this.setState({ erroRegister: "Contraseñas no coinciden" });
+      this.setState({
+        erroRegister: "Contraseñas no coinciden",
+        loading: false
+      });
       return false;
     }
     if (pass.length < 8) {
       this.setState({
-        erroRegister: "Contraseñas debe tener minimo 8 caracteres"
+        erroRegister: "Contraseñas debe tener minimo 8 caracteres",
+        loading: false
       });
       return false;
     }
     const response = await register(body);
     if (response.id.registered === true && response.id.uid !== 0) {
       delete body.pass;
-      this.setState({ user: { ...response.id, ...body } }, () => {
-        this.goTo({ ...response.id, ...body }, navigation);
-      });
+      this.setState(
+        { user: { ...response.id, ...body }, erroRegister: false },
+        () => {
+          this.goTo({ ...response.id, ...body }, navigation);
+        }
+      );
     } else {
-      response.id.message;
+      this.setState({
+        erroRegister: response.id.message,
+        loading: false
+      });
     }
   };
   login = async navigation => {
     const { email, password } = this.state;
-
+    this.setState({ loading: true });
     if (!isValidEmail(email)) {
-      this.setState({ errorLogin: "Email incorrecto" });
+      this.setState({ errorLogin: "Email incorrecto", loading: false });
       return false;
     }
     // email: "test2@test.com",
@@ -94,17 +115,19 @@ class AppProvider extends Component {
       password
     };
     const response = await login(body);
+    console.log("response :", response);
     if (response.uid !== 0) {
-      this.setState({ user: response, markers: [] }, () => {
+      this.setState({ user: response, markers: [], errorLogin: false }, () => {
         this.goTo(response, navigation);
       });
     } else {
-      this.setState({ errorLogin: response.message });
+      this.setState({ errorLogin: response.message, loading: false });
     }
   };
   goTo = async (response, navigation) => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(response));
+      this.setState({ loading: false });
       navigation.replace("Home");
     } catch (error) {}
   };
